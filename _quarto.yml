@@ -1,0 +1,26 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Indigenous Science & Education Resources"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: library.qmd
+        text: Resource library
+      - href: about.qmd
+        text: About & stewardship
+  search: true
+  page-footer: "A developing, collaboratively curated resource library."
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: false
+    link-external-newwindow: true
+execute:
+  echo: false
+  warning: false

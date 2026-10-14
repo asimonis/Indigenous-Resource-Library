@@ -1,0 +1,21 @@
+---
+title: "Indigenous Science & Education Resources"
+---
+
+## Explore, learn, and build respectful relationships
+
+This developing collection brings together publicly discoverable resources on Indigenous histories, education, science, and decolonization. It is intended as a starting point for educators, researchers, and community partners—not as a substitute for relationships with Indigenous communities or community-specific guidance.
+
+[**Explore the resource library →**](library.qmd){.btn .btn-primary}
+
+### About this pilot
+
+This is an early prototype built from a small working inventory. Resource descriptions, categories, permissions, and the site's future direction are subject to review with the Indigenous scholars helping curate the collection.
+
+### Suggested starting points
+
+- **California Native History:** Regional histories and Indigenous perspectives.
+- **Indigenous Education:** Scholarship on science education and land-based learning.
+- **Decolonization:** Introductory talks and reflections.
+
+Browse the [full library](library.qmd) or learn about [stewardship and contributions](about.qmd).

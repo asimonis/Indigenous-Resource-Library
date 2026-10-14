@@ -1,0 +1,49 @@
+---
+title: "Resource library"
+---
+
+Browse the resources below. The search field searches titles, authors, descriptions, and topics. The filters can be combined.
+
+```{r}
+#| results: asis
+resources <- read.csv("resources.csv", stringsAsFactors = FALSE, check.names = FALSE,
+                      fileEncoding = "UTF-8", na.strings = character())
+resources[is.na(resources)] <- ""
+escape_html <- function(x) {
+  x <- as.character(x)
+  x <- gsub("&", "&amp;", x, fixed = TRUE)
+  x <- gsub("<", "&lt;", x, fixed = TRUE)
+  x <- gsub(">", "&gt;", x, fixed = TRUE)
+  x <- gsub('"', "&quot;", x, fixed = TRUE)
+  x
+}
+valid_url <- function(x) grepl("^https?://", x, ignore.case = TRUE)
+topics <- sort(unique(resources$Topics[nzchar(resources$Topics)]))
+formats <- sort(unique(resources$Format[nzchar(resources$Format)]))
+cat('<div class="resource-tools">')
+cat('<label for="resource-search">Search resources</label>')
+cat('<input id="resource-search" type="search" placeholder="Search titles, authors, descriptions..." aria-label="Search resources">')
+cat('<label for="topic-filter">Topic</label><select id="topic-filter"><option value="">All topics</option>')
+for (x in topics) cat(sprintf('<option value="%s">%s</option>', escape_html(x), escape_html(x)))
+cat('</select><label for="format-filter">Format</label><select id="format-filter"><option value="">All formats</option>')
+for (x in formats) cat(sprintf('<option value="%s">%s</option>', escape_html(x), escape_html(x)))
+cat('</select></div>')
+cat(sprintf('<p id="resource-count" aria-live="polite">%s resources</p>', nrow(resources)))
+cat('<div id="resource-list" class="resource-list">')
+for (i in seq_len(nrow(resources))) {
+  r <- resources[i, ]
+  searchable <- paste(r$Title, r$`Author/creators`, r$Description, r$Topics, r$Format, collapse = " ")
+  cat(sprintf('<article class="resource-card" data-search="%s" data-topic="%s" data-format="%s">',
+              escape_html(tolower(searchable)), escape_html(r$Topics), escape_html(r$Format)))
+  cat(sprintf('<div class="resource-meta">%s · %s</div>', escape_html(r$Topics), escape_html(r$Format)))
+  cat(sprintf('<h3>%s</h3>', escape_html(r$Title)))
+  if (nzchar(r$`Author/creators`) || nzchar(r$Year)) cat(sprintf('<p class="resource-byline">%s%s%s</p>', escape_html(r$`Author/creators`), if (nzchar(r$`Author/creators`) && nzchar(r$Year)) ' · ' else '', escape_html(r$Year)))
+  if (nzchar(r$Description)) cat(sprintf('<p>%s</p>', escape_html(r$Description)))
+  if (valid_url(r$Link)) cat(sprintf('<p><a href="%s" target="_blank" rel="noopener noreferrer">View original resource ↗</a></p>', escape_html(r$Link)))
+  else cat('<p class="missing-link">Source link to be added</p>')
+  cat('</article>')
+}
+cat('</div><p id="no-results" hidden>No matching resources. Try another search or filter.</p>')
+```
+
+<script src="filter.js"></script>
