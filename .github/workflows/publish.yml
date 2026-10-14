@@ -31,12 +31,16 @@ jobs:
 
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
+        with:
+          r-version:'4.5'
+          use-public-rspm: true
 
       - name: Install R packages
-        run: |
-          Rscript -e 'install.packages("knitr", repos="https://cloud.r-project.org")'
-          Rscript -e 'install.packages("rmarkdown", repos="https://cloud.r-project.org")'
-          Rscript -e 'stopifnot(requireNamespace("rmarkdown", quietly = TRUE))'
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with: 
+          packages: |
+            any::knitr
+            any::rmarkdown
 
       - name: Render website
         run: quarto render
