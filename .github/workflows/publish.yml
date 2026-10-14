@@ -3,7 +3,8 @@ name: Publish Quarto Website
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -32,12 +33,12 @@ jobs:
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
         with:
-          r-version:'4.5'
+          r-version: '4.5'
           use-public-rspm: true
 
       - name: Install R packages
         uses: r-lib/actions/setup-r-dependencies@v2
-        with: 
+        with:
           packages: |
             any::knitr
             any::rmarkdown
