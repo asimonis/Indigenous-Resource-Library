@@ -1,5 +1,8 @@
 ---
 title: "Resource library"
+execute:
+  freeze: false
+  cache: false
 ---
 
 Browse the resources below. The search field searches titles, authors, descriptions, and topics. The filters can be combined.
@@ -50,4 +53,6 @@ for (i in seq_len(nrow(resources))) {
 cat('</div><p id="no-results" hidden>No matching resources. Try another search or filter.</p>')
 ```
 
+```{=html}
 <script src="filter.js"></script>
+```
