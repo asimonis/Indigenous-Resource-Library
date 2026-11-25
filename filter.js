@@ -5,13 +5,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const cards = [...document.querySelectorAll('.resource-card')];
   const count = document.getElementById('resource-count');
   const empty = document.getElementById('no-results');
+  function matchesCategory(value, selected) {
+    return !selected || (value || "").split(";").map(x => x.trim()).includes(selected);
+  }
   function update() {
     const query = search.value.toLocaleLowerCase().trim();
     let shown = 0;
     cards.forEach(card => {
       const match = card.dataset.search.includes(query) &&
-        (!topic.value || card.dataset.topic === topic.value) &&
-        (!format.value || card.dataset.format === format.value);
+        matchesCategory(card.dataset.topic, topic.value) &&
+        matchesCategory(card.dataset.format, format.value);
       card.hidden = !match;
       if (match) shown++;
     });

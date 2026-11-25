@@ -18,8 +18,12 @@ escape_html <- function(x) {
   x
 }
 valid_url <- function(x) grepl("^https?://", x, ignore.case = TRUE)
-topics <- sort(unique(resources$Topics[nzchar(resources$Topics)]))
-formats <- sort(unique(resources$Format[nzchar(resources$Format)]))
+split_categories <- function(x) {
+  values <- trimws(unlist(strsplit(x, ";", fixed = TRUE)))
+  sort(unique(values[nzchar(values)]))
+}
+topics <- split_categories(resources$Topics)
+formats <- split_categories(resources$Format)
 cat('<div class="resource-tools">')
 cat('<label for="resource-search">Search resources</label>')
 cat('<input id="resource-search" type="search" placeholder="Search titles, authors, descriptions..." aria-label="Search resources">')
