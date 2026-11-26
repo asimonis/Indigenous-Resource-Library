@@ -9,8 +9,15 @@ Browse the resources below. The search field searches titles, authors, descripti
 
 ```{r}
 #| results: asis
-resources <- read.csv("resources.csv", stringsAsFactors = FALSE, check.names = FALSE,
-                      fileEncoding = "UTF-8", na.strings = character())
+resources <-  withCallingHandlers(
+  read.csv("resources.csv", 
+           stringsAsFactors = FALSE, 
+           check.names = FALSE,
+           fileEncoding = "UTF-8", 
+           na.strings = character()),
+  warning = function(w) {
+    stop(conditionMessage(w), call. = FALSE)})
+  
 resources[is.na(resources)] <- ""
 escape_html <- function(x) {
   x <- as.character(x)
