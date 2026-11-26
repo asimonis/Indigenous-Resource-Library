@@ -1,5 +1,6 @@
 ---
 title: "Resource library"
+page-layout: full
 execute:
   freeze: false
   cache: false
@@ -9,15 +10,10 @@ Browse the resources below. The search field searches titles, authors, descripti
 
 ```{r}
 #| results: asis
-resources <-  withCallingHandlers(
-  read.csv("resources.csv", 
-           stringsAsFactors = FALSE, 
-           check.names = FALSE,
-           fileEncoding = "UTF-8", 
-           na.strings = character()),
-  warning = function(w) {
-    stop(conditionMessage(w), call. = FALSE)})
-  
+#| echo: false
+resources <- withCallingHandlers(read.csv("resources.csv", stringsAsFactors = FALSE, check.names = FALSE,
+                      fileEncoding = "UTF-8", na.strings = character()), warning = function(w) stop(conditionMessage(w), call. = FALSE))
+stopifnot(all(c("Title", "Author/creators", "Year", "Description", "Topics", "Format", "Link") %in% names(resources)))
 resources[is.na(resources)] <- ""
 escape_html <- function(x) {
   x <- as.character(x)
@@ -42,22 +38,24 @@ for (x in topics) cat(sprintf('<option value="%s">%s</option>', escape_html(x), 
 cat('</select><label for="format-filter">Format</label><select id="format-filter"><option value="">All formats</option>')
 for (x in formats) cat(sprintf('<option value="%s">%s</option>', escape_html(x), escape_html(x)))
 cat('</select></div>')
+cat('<div class="library-toolbar" id="library-toolbar" hidden><div class="view-controls" role="group" aria-label="Display layout"><button type="button" id="grid-view" aria-pressed="true">▦ Grid</button><button type="button" id="list-view" aria-pressed="false">☰ List</button></div><label>Sort by <select id="resource-sort"><option value="title">Title A–Z</option><option value="author">Author A–Z</option><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="original">Original order</option></select></label><label>Per page <select id="page-size"><option value="12">12</option><option value="24">24</option><option value="48">48</option><option value="all">All</option></select></label><button type="button" id="clear-filters">Clear filters</button></div>')
 cat(sprintf('<p id="resource-count" aria-live="polite">%s resources</p>', nrow(resources)))
 cat('<div id="resource-list" class="resource-list">')
 for (i in seq_len(nrow(resources))) {
   r <- resources[i, ]
   searchable <- paste(r$Title, r$`Author/creators`, r$Description, r$Topics, r$Format, collapse = " ")
-  cat(sprintf('<article class="resource-card" data-search="%s" data-topic="%s" data-format="%s">',
-              escape_html(tolower(searchable)), escape_html(r$Topics), escape_html(r$Format)))
-  cat(sprintf('<div class="resource-meta">%s · %s</div>', escape_html(r$Topics), escape_html(r$Format)))
+  cat(sprintf('<article class="resource-card" data-search="%s" data-topic="%s" data-format="%s" data-title="%s" data-author="%s" data-year="%s">',
+              escape_html(tolower(searchable)), escape_html(r$Topics), escape_html(r$Format), escape_html(r$Title), escape_html(r$`Author/creators`), escape_html(r$Year)))
+  cat(sprintf('<div class="resource-formats">%s</div>', escape_html(r$Format)))
   cat(sprintf('<h3>%s</h3>', escape_html(r$Title)))
   if (nzchar(r$`Author/creators`) || nzchar(r$Year)) cat(sprintf('<p class="resource-byline">%s%s%s</p>', escape_html(r$`Author/creators`), if (nzchar(r$`Author/creators`) && nzchar(r$Year)) ' · ' else '', escape_html(r$Year)))
-  if (nzchar(r$Description)) cat(sprintf('<p>%s</p>', escape_html(r$Description)))
+  if (nzchar(r$Topics)) cat(sprintf('<p class="resource-meta">%s</p>', escape_html(r$Topics)))
+  if (nzchar(r$Description)) cat(sprintf('<details class="resource-description"><summary>About this resource</summary><p>%s</p></details>', escape_html(r$Description)))
   if (valid_url(r$Link)) cat(sprintf('<p><a href="%s" target="_blank" rel="noopener noreferrer">View original resource ↗</a></p>', escape_html(r$Link)))
   else cat('<p class="missing-link">Source link to be added</p>')
   cat('</article>')
 }
-cat('</div><p id="no-results" hidden>No matching resources. Try another search or filter.</p>')
+cat('</div><p id="no-results" hidden>No matching resources. Try another search or filter.</p><nav id="resource-pagination" aria-label="Resource pages" hidden><button type="button" id="prev-page">Previous</button><span id="page-status"></span><button type="button" id="next-page">Next</button></nav>')
 ```
 
 ```{=html}
