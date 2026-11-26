@@ -71,5 +71,15 @@ document.addEventListener('DOMContentLoaded', () => {
   get('clear-filters').addEventListener('click',()=>{search.value=topic.value=format.value='';resetPage();});
   get('prev-page').addEventListener('click',()=>{page--;update();count.scrollIntoView({block:'start'});});
   get('next-page').addEventListener('click',()=>{page++;update();count.scrollIntoView({block:'start'});});
+  // Apply homepage links without changing the existing filter logic.
+  const params = new URLSearchParams(window.location.search);
+  function selectFromUrl(select, key) {
+    const requested = params.get(key);
+    if (!requested) return;
+    const option = [...select.options].find(o => normalize(o.value) === normalize(requested));
+    if (option) select.value = option.value;
+  }
+  selectFromUrl(topic, 'topic');
+  selectFromUrl(format, 'format');
   get('library-toolbar').hidden=false; update();
 });
